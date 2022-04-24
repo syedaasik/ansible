@@ -1,6 +1,7 @@
 ---
-- name: Installing packages through roles
+- name: executing roles
   hosts: vm1
   
   roles:
   - packages
+  - lvmextend
