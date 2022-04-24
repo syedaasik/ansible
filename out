@@ -1,0 +1,29 @@
+Using /root/ansible/ansible.cfg as config file
+
+PLAY [vm1] *********************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [vm1]
+
+TASK [check the volume group free space] ***************************************
+ok: [vm1] => {"changed": false, "cmd": "vgs \"vg01\" --units m | awk '{print $NF}' | tail -1 | cut -d 'm' -f1", "delta": "0:00:00.058576", "end": "2022-04-24 09:17:19.686691", "rc": 0, "start": "2022-04-24 09:17:19.628115", "stderr": "", "stderr_lines": [], "stdout": "6988.00", "stdout_lines": ["6988.00"]}
+
+TASK [Calculating lv size] *****************************************************
+ok: [vm1] => {"changed": false, "cmd": "lvs \"vg01\"/\"lvol03\"--units m --noheadings | awk '{print $NF}' | cut -d 'm' -f1", "delta": "0:00:00.057385", "end": "2022-04-24 09:17:20.402581", "rc": 0, "start": "2022-04-24 09:17:20.345196", "stderr": "  Failed to find logical volume \"vg01/lvol03--units\"\n  Volume group \"m\" not found\n  Cannot process volume group m", "stderr_lines": ["  Failed to find logical volume \"vg01/lvol03--units\"", "  Volume group \"m\" not found", "  Cannot process volume group m"], "stdout": "", "stdout_lines": []}
+
+TASK [Calulating 20 percent] ***************************************************
+ok: [vm1] => {
+    "msg": "0.0"
+}
+
+TASK [Calculating new lv size] *************************************************
+ok: [vm1] => {
+    "msg": "0"
+}
+
+TASK [Extending logical volume size] *******************************************
+fatal: [vm1]: FAILED! => {"changed": false, "msg": "Sorry, no shrinking of lvol03 to 0 permitted."}
+
+PLAY RECAP *********************************************************************
+vm1                        : ok=5    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+

@@ -1,0 +1,6 @@
+---
+- name: Installing packages through roles
+  hosts: vm1
+  
+  roles:
+  - packages

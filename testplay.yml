@@ -1,0 +1,37 @@
+---
+- hosts: vm1
+  vars:
+    vg_name: vg01
+    lv_name: lvol03
+
+  tasks:
+
+  - name: check the volume group free space
+    shell: vgs "{{ vg_name }}" --units m | awk '{print $NF}' | tail -1 | cut -d 'm' -f1
+    register: free_space_in_vg
+    changed_when: false
+
+  - name: Calculating lv size
+    shell: lvs "{{ vg_name }}"/"{{ lv_name }}" --units m --noheadings | awk '{print $NF}' | cut -d 'm' -f1
+    register: lv_size
+    changed_when: false
+    
+  - name: Calulating 20 percent
+    debug:
+      msg: "{{ lv_size.stdout|int * (20/100) }}" 
+    register: twenty_percent
+    changed_when: false
+
+  - name: Calculating new lv size
+    debug:
+      msg: "{{ lv_size.stdout|int + twenty_percent.msg|int }}"
+    register: new_lv_size
+    changed_when: false
+
+  - name: Extending logical volume size
+    lvol:
+      vg: "{{ vg_name }}"
+      lv: "{{ lv_name }}"
+      size: "{{ new_lv_size.msg }}"
+      resizefs: true
+    when: free_space_in_vg.stdout|int > new_lv_size.msg|int
