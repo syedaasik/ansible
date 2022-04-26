@@ -2,3 +2,5 @@
 package:
 - vsftpd
 - httpd
+
+input: install 

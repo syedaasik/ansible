@@ -1,23 +1,8 @@
 ---
-- name: Installing packages
-  yum:
-    name: "{{ item }}"
-    state: present
-  notify:
-  - restart {{ item }}
-  loop: "{{ package }}"
-  when: ansible_distribution == "Rocky"
+- name: Installing
+  include_tasks: install.yml
+  when: ansible_distribution == "Rocky" and input  == "install"
 
-- name: Copying files to web root
-  copy:
-    src: index.html
-    dest: /var/www/html/index.html
-  when: ansible_distribution == "Rocky"
-
-- name: Configuring firewall
-  firewalld:
-    service: http
-    permanent: yes
-    immediate: yes
-    state: enabled
-  when: ansible_distribution == "Rocky"
+- name: Uninstalling 
+  include_tasks: uninstall.yml
+  when: ansible_distribution == "Rocky" and input  == "uninstall"

@@ -1,0 +1,24 @@
+---
+- name: Stop httpd service
+  service:
+    name: httpd
+    state: stopped
+    enabled: no
+
+- name: Removing files from web root
+  file:
+    path: /var/www/html/index.html
+    state: absent 
+
+- name: Removing packages
+  yum:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ package }}"
+
+- name: Configuring firewall
+  firewalld:
+    service: http
+    permanent: yes
+    immediate: yes
+    state: disabled

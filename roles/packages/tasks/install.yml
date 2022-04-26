@@ -1,0 +1,20 @@
+---
+- name: Installing packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  notify:
+  - restart {{ item }}
+  loop: "{{ package }}"
+
+- name: Copying files to web root
+  template:
+    src: index.html
+    dest: /var/www/html/index.html
+
+- name: Configuring firewall
+  firewalld:
+    service: http
+    permanent: yes
+    immediate: yes
+    state: enabled
